@@ -14,6 +14,22 @@ const EffectsRegistry = {
         };
     },
 
+    grid: (scene, camera, opts, state) => {
+        const size = opts.size || 20;
+        const divisions = opts.divisions || 20;
+        const color = opts.color || 0x4444ff;
+
+        const grid = new THREE.GridHelper(size, divisions, color, color);
+        grid.rotation.x = Math.PI / 2; // Face the camera
+        scene.add(grid);
+
+        return () => {
+            // Warp the grid based on mouse
+            grid.rotation.y = state.mouse.x * 0.1;
+            grid.rotation.x = (Math.PI / 2) + (state.mouse.y * 0.1);
+        };
+    },
+
     starfield: (scene, camera, opts, state) => {
         const starCount = opts.count || 6000;
         const starColor = opts.color || 0xffffff;
@@ -46,7 +62,7 @@ const EffectsRegistry = {
             stars.rotation.y += 0.0005;
 
             // REACTIVE: Drift the stars based on mouse position
-            // We target a slight offset to create a "parallax" feel
+            // Target a slight offset to create a "parallax" feel
             stars.position.x += (state.mouse.x * 2 - stars.position.x) * 0.02;
             stars.position.y += (state.mouse.y * 2 - stars.position.y) * 0.02;
         };
@@ -71,8 +87,6 @@ export const LiveThreeHook = {
         // 4. Start Animation
         this.animate();
     },
-
-    // --- Logic Grouping ---
 
     setupScene() {
         const container = this.el;
@@ -99,7 +113,7 @@ export const LiveThreeHook = {
     // --- Event Handlers ---
 
     addEventListeners() {
-        // We bind these to 'this' so they have access to the hook's context
+        // Bind these to 'this' so they have access to the hook's context
         this.onMouseMove = this.handleMouseMove.bind(this);
         this.onResize = this.handleResize.bind(this);
 
