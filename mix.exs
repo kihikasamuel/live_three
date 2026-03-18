@@ -10,7 +10,8 @@ defmodule LiveThree.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       description: "Seamless Three.js integration for Phoenix LiveView.",
-      package: package()
+      package: package(),
+      docs: docs()
     ]
   end
 
@@ -38,6 +39,28 @@ defmodule LiveThree.MixProject do
     [
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/kihikasamuel/live_three"}
+    ]
+  end
+
+  defp docs do
+    [
+      main: "introduction",
+      extras: [
+        "guides/introduction.md",
+        "guides/installation.md",
+        "guides/custom_effects.md",
+        "guides/architecture.md"
+      ],
+      groups_for_extras: [
+        "Getting Started": [
+          "guides/introduction.md",
+          "guides/installation.md"
+        ],
+        "Advanced Usage": [
+          "guides/custom_effects.md",
+          "guides/architecture.md"
+        ]
+      ]
     ]
   end
 end
