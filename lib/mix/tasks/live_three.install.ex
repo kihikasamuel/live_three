@@ -18,6 +18,7 @@ defmodule Mix.Tasks.LiveThree.Install do
     case check_liveview_version() do
       :ok ->
         perform_install()
+
       {:error, reason} ->
         Mix.shell().error("✘ Compatibility Error: #{reason}")
         Mix.shell().info("LiveThree requires Phoenix LiveView >= #{@min_lv_version}")
@@ -50,11 +51,13 @@ defmodule Mix.Tasks.LiveThree.Install do
     case Application.loaded_applications() |> List.keyfind(:phoenix_live_view, 0) do
       {:phoenix_live_view, _desc, version} ->
         v_string = List.to_string(version)
+
         if Version.match?(v_string, ">= #{@min_lv_version}") do
           :ok
         else
           {:error, "Found LiveView #{v_string}, but we need #{@min_lv_version}+"}
         end
+
       nil ->
         {:error, "Phoenix LiveView not found in loaded applications."}
     end
@@ -64,11 +67,13 @@ defmodule Mix.Tasks.LiveThree.Install do
     assets_path = Path.expand("assets")
 
     if File.dir?(assets_path) do
-       Mix.shell().info([:green, "✔ Environment is compatible. Proceeding with JS install..."])
+      Mix.shell().info([:green, "✔ Environment is compatible. Proceeding with JS install..."])
       install_npm_deps(assets_path)
       print_instructions()
     else
-      Mix.shell().error("Could not find 'assets' directory. Make sure you are in the root of your Phoenix project")
+      Mix.shell().error(
+        "Could not find 'assets' directory. Make sure you are in the root of your Phoenix project"
+      )
     end
   end
 
