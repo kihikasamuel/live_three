@@ -2,6 +2,7 @@ defmodule Mix.Tasks.LiveThree.Install do
   use Mix.Task
 
   @shortdoc "Installs LiveThree JS dependencies and provides setup instructions"
+  @min_lv_version "0.20.0"
 
   @moduledoc """
   This task helps you set up LiveThree in your Phoenix project.
@@ -14,15 +15,12 @@ defmodule Mix.Tasks.LiveThree.Install do
   def run(_args) do
     Mix.shell().info([:green, "* installing live_three setup..."])
 
-    assets_path = Path.expand("assets")
-
-    if File.dir?(assets_path) do
-      install_npm_deps(assets_path)
-      print_instructions()
-    else
-      Mix.shell().error(
-        "Could not find 'assets' directory. Are you in the root of your Phoenix project?"
-      )
+    case check_liveview_version() do
+      :ok ->
+        perform_install()
+      {:error, reason} ->
+        Mix.shell().error("✘ Compatibility Error: #{reason}")
+        Mix.shell().info("LiveThree requires Phoenix LiveView >= #{@min_lv_version}")
     end
   end
 
@@ -45,6 +43,32 @@ defmodule Mix.Tasks.LiveThree.Install do
         Mix.shell().error(
           "✘ Failed to install three.js. Please run '#{cmd} #{Enum.join(args, " ")}' manually in ./assets"
         )
+    end
+  end
+
+  defp check_liveview_version do
+    case Application.loaded_applications() |> List.keyfind(:phoenix_live_view, 0) do
+      {:phoenix_live_view, _desc, version} ->
+        v_string = List.to_string(version)
+        if Version.match?(v_string, ">= #{@min_lv_version}") do
+          :ok
+        else
+          {:error, "Found LiveView #{v_string}, but we need #{@min_lv_version}+"}
+        end
+      nil ->
+        {:error, "Phoenix LiveView not found in loaded applications."}
+    end
+  end
+
+  defp perform_install do
+    assets_path = Path.expand("assets")
+
+    if File.dir?(assets_path) do
+       Mix.shell().info([:green, "✔ Environment is compatible. Proceeding with JS install..."])
+      install_npm_deps(assets_path)
+      print_instructions()
+    else
+      Mix.shell().error("Could not find 'assets' directory. Make sure you are in the root of your Phoenix project")
     end
   end
 
