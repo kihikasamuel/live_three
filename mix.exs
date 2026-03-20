@@ -31,14 +31,16 @@ defmodule LiveThree.MixProject do
     [
       {:phoenix_live_view, "~> 1.0"},
       {:jason, "~> 1.2"},
-      {:ex_doc, ">= 0.0.0", runtime: false}
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false, warn_if_outdated: true}
     ]
   end
 
   defp package do
     [
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/kihikasamuel/live_three"}
+      links: %{"GitHub" => "https://github.com/kihikasamuel/live_three"},
+      source_url: "https://github.com/kihikasamuel/live_three",
+      homepage_url: "doc/introduction.html"
     ]
   end
 
