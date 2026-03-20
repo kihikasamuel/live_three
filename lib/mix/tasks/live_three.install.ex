@@ -66,14 +66,62 @@ defmodule Mix.Tasks.LiveThree.Install do
   defp perform_install do
     assets_path = Path.expand("assets")
 
+    # if File.dir?(assets_path) do
+    #   Mix.shell().info([:green, "✔ Environment is compatible. Proceeding with JS install..."])
+    #   install_npm_deps(assets_path)
+    #   print_instructions()
+    # else
+    #   Mix.shell().error(
+    #     "Could not find 'assets' directory. Make sure you are in the root of your Phoenix project"
+    #   )
+    # end
     if File.dir?(assets_path) do
-      Mix.shell().info([:green, "✔ Environment is compatible. Proceeding with JS install..."])
-      install_npm_deps(assets_path)
-      print_instructions()
+      Mix.shell().info([:green, "* Configuring assets..."])
+
+      # 1. Inject the "file:../deps/live_three" dependency
+      case add_npm_path_dep(assets_path) do
+        :ok ->
+          # 2. Run the actual install (npm/yarn/pnpm)
+          install_npm_deps(assets_path)
+
+          Mix.shell().info("""
+
+          #{IO.ANSI.green()}✔ LiveThree is now linked to your assets!#{IO.ANSI.reset()}
+          You can now use: #{IO.ANSI.cyan()}import { LiveThreeHook } from "live_three"#{IO.ANSI.reset()}
+          """)
+
+          print_instructions()
+
+        {:error, reason} ->
+          Mix.shell().error("✘ Could not update package.json: #{reason}")
+      end
     else
-      Mix.shell().error(
-        "Could not find 'assets' directory. Make sure you are in the root of your Phoenix project"
-      )
+      Mix.shell().error("✘ Could not find 'assets' directory. Are you in a Phoenix project root?")
+    end
+  end
+
+  defp add_npm_path_dep(assets_path) do
+    package_json_path = Path.join(assets_path, "package.json")
+
+    if File.exists?(package_json_path) do
+      try do
+        content = File.read!(package_json_path) |> Jason.decode!()
+
+        # We insert the path to the deps folder so esbuild can find the JS
+        updated_content =
+          put_in(
+            content,
+            ["dependencies", "live_three"],
+            "file:../deps/live_three"
+          )
+
+        File.write!(package_json_path, Jason.encode_to_iodata!(updated_content, pretty: true))
+        :ok
+      rescue
+        _ -> {:error, "Invalid package.json format."}
+      end
+    else
+      {:error, "package.json not found."}
     end
   end
 
