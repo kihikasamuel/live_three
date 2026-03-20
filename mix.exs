@@ -39,8 +39,7 @@ defmodule LiveThree.MixProject do
     [
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/kihikasamuel/live_three"},
-      source_url: "https://github.com/kihikasamuel/live_three",
-      homepage_url: "doc/introduction.html"
+      source_url: "https://github.com/kihikasamuel/live_three"
     ]
   end
 
