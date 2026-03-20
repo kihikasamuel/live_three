@@ -37,8 +37,7 @@ defmodule LiveThree.MixProject do
 
   defp package do
     [
-      files: ~w(lib assets mix.exs .formatter.exs README* readme* LICENSE*
-                license* CHANGELOG* changelog* src),
+      files: ~w(lib assets mix.exs .formatter.exs README),
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/kihikasamuel/live_three"},
       source_url: "https://github.com/kihikasamuel/live_three"
