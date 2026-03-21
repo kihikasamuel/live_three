@@ -10,7 +10,7 @@ defmodule LiveThree.Components do
         effect="starfield"
         options={%{color: "#000000", density: 1.0}}
       />
-  Sample values for effect: "basic", "starfield"
+  Sample values for effect: "basic", "starfield", "celestial"
   Sample values for options: %{color: "#000000", density: 1.0, speed: 2.0}
 
   NOTE: Options values are passed to the effect as a map.
