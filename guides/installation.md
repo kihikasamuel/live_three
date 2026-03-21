@@ -27,11 +27,16 @@ Open your assets/js/app.js file. You need to import the LiveThreeHook and includ
 
 ```javascript
 // assets/js/app.js
+import * as THREE from 'three';
 import { LiveThreeHook } from "live_three"
+
+// Important: Initialize the hook with the THREE instance
+// This makes sure that only one instance of THREE is used across all components
+LiveThreeHook.init(THREE);
 
 // Define your hooks object
 let Hooks = {
-  LiveThreeHook: LiveThreeHook
+  LiveThreeHook: LiveThreeHook.Hook
 }
 
 // Add hooks to your LiveSocket

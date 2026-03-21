@@ -66,15 +66,6 @@ defmodule Mix.Tasks.LiveThree.Install do
   defp perform_install do
     assets_path = Path.expand("assets")
 
-    # if File.dir?(assets_path) do
-    #   Mix.shell().info([:green, "✔ Environment is compatible. Proceeding with JS install..."])
-    #   install_npm_deps(assets_path)
-    #   print_instructions()
-    # else
-    #   Mix.shell().error(
-    #     "Could not find 'assets' directory. Make sure you are in the root of your Phoenix project"
-    #   )
-    # end
     if File.dir?(assets_path) do
       Mix.shell().info([:green, "* Configuring assets..."])
 

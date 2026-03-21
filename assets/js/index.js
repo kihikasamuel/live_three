@@ -1,4 +1,5 @@
-import * as THREE from 'three';
+// import * as THREE from 'three';
+let THREE = null;
 
 const EffectsRegistry = {
     basic: (scene, camera, opts, state) => {
@@ -70,79 +71,89 @@ const EffectsRegistry = {
 };
 
 export const LiveThreeHook = {
-    mounted() {
-        const { effect, options } = this.el.dataset;
-
-        // 1. Initialize State & Core Objects
-        this.state = { mouse: { x: 0, y: 0 } };
-        this.setupScene();
-
-        // 2. Initialize the Effect
-        const initEffect = EffectsRegistry[effect] || EffectsRegistry.basic;
-        this.updateEffect = initEffect(this.scene, this.camera, JSON.parse(options), this.state);
-
-        // 3. Attach Listeners
-        this.addEventListeners();
-
-        // 4. Start Animation
-        this.animate();
+    init(threejsInstance) {
+        THREE = threejsInstance;
+        return this;
     },
+    Hook: {
+        mounted() {
+            if (!THREE) {
+                console.error("LiveThree: THREE instance not found. Call LiveThree.init(THREE) in app.js");
+                return;
+            }
+            const { effect, options } = this.el.dataset;
 
-    setupScene() {
-        const container = this.el;
-        this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(
-            75,
-            container.offsetWidth / container.offsetHeight,
-            0.1,
-            1000
-        );
-        this.camera.position.z = 5;
+            // 1. Initialize State & Core Objects
+            this.state = { mouse: { x: 0, y: 0 } };
+            this.setupScene();
 
-        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        this.renderer.setSize(container.offsetWidth, container.offsetHeight);
-        container.appendChild(this.renderer.domElement);
-    },
+            // 2. Initialize the Effect
+            const initEffect = EffectsRegistry[effect] || EffectsRegistry.basic;
+            this.updateEffect = initEffect(this.scene, this.camera, JSON.parse(options), this.state);
 
-    animate() {
-        this.animationFrame = requestAnimationFrame(() => this.animate());
-        if (this.updateEffect) this.updateEffect();
-        this.renderer.render(this.scene, this.camera);
-    },
+            // 3. Attach Listeners
+            this.addEventListeners();
 
-    // --- Event Handlers ---
+            // 4. Start Animation
+            this.animate();
+        },
 
-    addEventListeners() {
-        // Bind these to 'this' so they have access to the hook's context
-        this.onMouseMove = this.handleMouseMove.bind(this);
-        this.onResize = this.handleResize.bind(this);
+        setupScene() {
+            const container = this.el;
+            this.scene = new THREE.Scene();
+            this.camera = new THREE.PerspectiveCamera(
+                75,
+                container.offsetWidth / container.offsetHeight,
+                0.1,
+                1000
+            );
+            this.camera.position.z = 5;
 
-        window.addEventListener("mousemove", this.onMouseMove);
-        window.addEventListener("resize", this.onResize);
-    },
+            this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            this.renderer.setSize(container.offsetWidth, container.offsetHeight);
+            container.appendChild(this.renderer.domElement);
+        },
 
-    handleMouseMove(e) {
-        const rect = this.el.getBoundingClientRect();
-        this.state.mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-        this.state.mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-    },
+        animate() {
+            this.animationFrame = requestAnimationFrame(() => this.animate());
+            if (this.updateEffect) this.updateEffect();
+            this.renderer.render(this.scene, this.camera);
+        },
 
-    handleResize() {
-        const container = this.el;
-        this.camera.aspect = container.offsetWidth / container.offsetHeight;
-        this.camera.updateProjectionMatrix();
-        this.renderer.setSize(container.offsetWidth, container.offsetHeight);
-    },
+        // --- Event Handlers ---
 
-    destroyed() {
-        // Clean up using the references we created
-        window.removeEventListener("mousemove", this.onMouseMove);
-        window.removeEventListener("resize", this.onResize);
+        addEventListeners() {
+            // Bind these to 'this' so they have access to the hook's context
+            this.onMouseMove = this.handleMouseMove.bind(this);
+            this.onResize = this.handleResize.bind(this);
 
-        cancelAnimationFrame(this.animationFrame);
-        this.renderer.dispose();
+            window.addEventListener("mousemove", this.onMouseMove);
+            window.addEventListener("resize", this.onResize);
+        },
 
-        // Optional: Clear geometry/materials from memory
-        this.scene.clear();
+        handleMouseMove(e) {
+            const rect = this.el.getBoundingClientRect();
+            this.state.mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+            this.state.mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+        },
+
+        handleResize() {
+            const container = this.el;
+            this.camera.aspect = container.offsetWidth / container.offsetHeight;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(container.offsetWidth, container.offsetHeight);
+        },
+
+        destroyed() {
+            // Clean up using the references we created
+            window.removeEventListener("mousemove", this.onMouseMove);
+            window.removeEventListener("resize", this.onResize);
+
+            cancelAnimationFrame(this.animationFrame);
+            this.renderer.dispose();
+
+            // Optional: Clear geometry/materials from memory
+            this.scene.clear();
+        }
     }
 };
