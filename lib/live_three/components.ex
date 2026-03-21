@@ -26,7 +26,7 @@ defmodule LiveThree.Components do
     ~H"""
     <div
       id={@id}
-      phx-hook="LiveThreeHook"
+      phx-hook="LiveThree"
       phx-update="ignore"
       data-effect={@effect}
       data-options={Jason.encode!(@options)}
