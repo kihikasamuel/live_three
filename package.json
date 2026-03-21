@@ -2,9 +2,9 @@
     "name": "live_three",
     "version": "0.1.0",
     "description": "Three.js Hook for Phoenix LiveView",
-    "main": "js/index.js",
+    "main": "assets/js/index.js",
     "files": [
-        "js"
+        "assets/js"
     ],
     "peerDependencies": {
         "three": ">=0.150.0"
