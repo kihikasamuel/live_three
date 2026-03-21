@@ -161,7 +161,7 @@ const LiveThree = {
     }
 };
 
-export default {
+export {
     LiveThree,
     EffectsRegistry
 }
