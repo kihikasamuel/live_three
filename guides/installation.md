@@ -53,7 +53,7 @@ liveSocket.connect()
 To confirm everything is working, drop a basic scene into one of your LiveView templates (.heex):
 
 ```elixir
-<.three_scene id="test-scene" effect="basic" class="h-64 w-full"/>
+<.three_scene id="test-scene" effect="basic" class="h-screen w-full"/>
 ```
 
 If you see a rotating 3D cube, you're ready to go!
