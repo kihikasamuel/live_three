@@ -70,7 +70,7 @@ const EffectsRegistry = {
     }
 };
 
-export const LiveThreeHook = {
+export const LiveThree = {
     init(threejsInstance) {
         THREE = threejsInstance;
         return this;

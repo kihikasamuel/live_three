@@ -23,20 +23,20 @@ mix live_three.install
 
 3. Register the Hook
 
-Open your assets/js/app.js file. You need to import the LiveThreeHook and include it in your LiveSocket configuration.
+Open your assets/js/app.js file. You need to import the LiveThree and include it in your LiveSocket configuration.
 
 ```javascript
 // assets/js/app.js
 import * as THREE from 'three';
-import { LiveThreeHook } from "live_three"
+import { LiveThree } from "live_three"
 
 // Important: Initialize the hook with the THREE instance
 // This makes sure that only one instance of THREE is used across all components
-LiveThreeHook.init(THREE);
+LiveThree.init(THREE);
 
 // Define your hooks object
 let Hooks = {
-  LiveThreeHook: LiveThreeHook.Hook
+  LiveThree: LiveThree.Hook
 }
 
 // Add hooks to your LiveSocket
