@@ -111,7 +111,10 @@ export const LiveThree = {
 
             this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             this.renderer.setSize(container.offsetWidth, container.offsetHeight);
-            container.appendChild(this.renderer.domElement);
+            
+            const targetContainer = container.firstElementChild || container;
+            targetContainer.appendChild(this.renderer.domElement);
+            this.renderer.domElement.style.display = "block";
         },
 
         animate() {
