@@ -70,7 +70,7 @@ const EffectsRegistry = {
     }
 };
 
-export const LiveThree = {
+const LiveThree = {
     init(threejsInstance) {
         THREE = threejsInstance;
         return this;
@@ -111,7 +111,7 @@ export const LiveThree = {
 
             this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             this.renderer.setSize(container.offsetWidth, container.offsetHeight);
-            
+
             const targetContainer = container.firstElementChild || container;
             targetContainer.appendChild(this.renderer.domElement);
             this.renderer.domElement.style.display = "block";
@@ -160,3 +160,8 @@ export const LiveThree = {
         }
     }
 };
+
+export default {
+    LiveThree,
+    EffectsRegistry
+}
